@@ -6,6 +6,7 @@
 {{ end }}
 {{ $github := "" }}
 {{ $affiliation := "" }}
+{{ $heroTitle := "" }}
 {{ $location := "" }}
 {{ $softwareProjects := where $cv.projects "homepageSection" "software" }}
 {{ $talkProjects := where $cv.projects "homepageSection" "talks" }}
@@ -14,6 +15,9 @@
 {{ end }}
 {{ with index $cv.education 0 }}
   {{ $affiliation = .institution }}
+{{ end }}
+{{ with index $cv.personal.titles 0 }}
+  {{ $heroTitle = . }}
 {{ end }}
 {{ with $cv.personal.location }}
   {{ $parts := slice }}
@@ -28,10 +32,18 @@
 
 <section class="academic-hero">
   <div class="academic-hero__content">
-    <p class="academic-hero__eyebrow">{{ $affiliation }}</p>
     <h1>{{ $cv.personal.name }}</h1>
-    <p class="academic-hero__title">{{ index $cv.personal.titles 0 }}</p>
-    <p class="academic-hero__summary">{{ $cv.homepage.heroSummary }}</p>
+    <p class="academic-hero__summary">
+      {{- if and $heroTitle $affiliation -}}
+        {{ $heroTitle }} at {{ $affiliation }}. {{ $cv.homepage.heroSummary }}
+      {{- else if $heroTitle -}}
+        {{ $heroTitle }}. {{ $cv.homepage.heroSummary }}
+      {{- else if $affiliation -}}
+        {{ $affiliation }}. {{ $cv.homepage.heroSummary }}
+      {{- else -}}
+        {{ $cv.homepage.heroSummary }}
+      {{- end -}}
+    </p>
     {{ with $cv.homepage.keywords }}
       <ul class="academic-hero__keywords">
         {{ range . }}
@@ -39,13 +51,6 @@
         {{ end }}
       </ul>
     {{ end }}
-    <div class="academic-hero__actions">
-      <a class="academic-button academic-button--primary" href="/cv/cv.pdf">Download CV</a>
-      {{ with $github }}
-        <a class="academic-button" href="{{ . }}" rel="noopener noreferrer" target="_blank">GitHub</a>
-      {{ end }}
-      <a class="academic-button" href="mailto:{{ $cv.personal.email }}">Email</a>
-    </div>
   </div>
   <div class="academic-hero__media">
     <img src="/images/profile.jpg" alt="Portrait of {{ $cv.personal.name }}">
@@ -54,14 +59,17 @@
 
 <section class="academic-section" id="publications">
   <h2>Publications</h2>
-  <ol class="academic-publications">
-    {{ range sort $cv.publicationEntries "sortKey" "desc" }}
-      <li class="academic-publications__item">
-        <div class="academic-publications__authors">{{ .authors | markdownify }}</div>
-        <div class="academic-publications__title">
-          <a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .title }}</a>
+  <ol class="academic-list academic-list--numbered academic-publications">
+    {{ range $index, $entry := sort $cv.publicationEntries "sortKey" "desc" }}
+      <li class="academic-list__item academic-publications__item">
+        <div class="academic-list__marker">{{ add $index 1 }}.</div>
+        <div class="academic-list__body">
+          <div class="academic-publications__authors">{{ $entry.authors | markdownify }}</div>
+          <div class="academic-publications__title">
+            <a href="{{ $entry.url }}" rel="noopener noreferrer" target="_blank">{{ $entry.title }}</a>
+          </div>
+          <div class="academic-publications__venue">{{ $entry.venue | markdownify }}</div>
         </div>
-        <div class="academic-publications__venue">{{ .venue | markdownify }}</div>
       </li>
     {{ end }}
   </ol>
@@ -70,20 +78,27 @@
 <section class="academic-section" id="software">
   <h2>Open Source Contributions</h2>
   <ol class="academic-list academic-list--numbered">
-    {{ range $softwareProjects }}
+    {{ range $index, $project := $softwareProjects }}
       <li class="academic-list__item">
-        <h3><a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a></h3>
-        <p class="academic-list__meta">{{ .homepageMeta }}</p>
-        {{ with .highlights }}
-          <p>{{ index . 0 }}</p>
-        {{ end }}
+        <div class="academic-list__marker">{{ add $index 1 }}.</div>
+        <div class="academic-list__body">
+          <h3><a href="{{ $project.url }}" rel="noopener noreferrer" target="_blank">{{ $project.name }}</a></h3>
+          <p class="academic-list__meta">{{ $project.homepageMeta }}</p>
+          {{ with $project.highlights }}
+            <p>{{ index . 0 }}</p>
+          {{ end }}
+        </div>
       </li>
     {{ end }}
-    {{ range $cv.homepage.softwareExtras }}
+    {{ $softwareBase := len $softwareProjects }}
+    {{ range $extraIndex, $extra := $cv.homepage.softwareExtras }}
       <li class="academic-list__item">
-        <h3><a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a></h3>
-        <p class="academic-list__meta">{{ .meta }}</p>
-        <p>{{ .description }}</p>
+        <div class="academic-list__marker">{{ add $softwareBase (add $extraIndex 1) }}.</div>
+        <div class="academic-list__body">
+          <h3><a href="{{ $extra.url }}" rel="noopener noreferrer" target="_blank">{{ $extra.name }}</a></h3>
+          <p class="academic-list__meta">{{ $extra.meta }}</p>
+          <p>{{ $extra.description }}</p>
+        </div>
       </li>
     {{ end }}
   </ol>
@@ -92,13 +107,16 @@
 <section class="academic-section" id="talks">
   <h2>Talks</h2>
   <ol class="academic-list academic-list--numbered">
-    {{ range $talkProjects }}
+    {{ range $index, $talk := $talkProjects }}
       <li class="academic-list__item">
-        <h3><a href="{{ .url }}" rel="noopener noreferrer" target="_blank">{{ .name }}</a></h3>
-        <p class="academic-list__meta">{{ .homepageMeta }}</p>
-        {{ with .highlights }}
-          <p>{{ index . 0 }}</p>
-        {{ end }}
+        <div class="academic-list__marker">{{ add $index 1 }}.</div>
+        <div class="academic-list__body">
+          <h3><a href="{{ $talk.url }}" rel="noopener noreferrer" target="_blank">{{ $talk.name }}</a></h3>
+          <p class="academic-list__meta">{{ $talk.homepageMeta }}</p>
+          {{ with $talk.highlights }}
+            <p>{{ index . 0 }}</p>
+          {{ end }}
+        </div>
       </li>
     {{ end }}
   </ol>
@@ -107,6 +125,7 @@
 <section class="academic-section" id="experience">
   <h2>Experience</h2>
   <ol class="academic-list academic-list--numbered">
+    {{ $experienceIndex := 0 }}
     {{ range $job := $cv.work }}
       {{ range $position := $job.positions }}
         {{ $start := time.AsTime $position.startDate }}
@@ -116,13 +135,17 @@
         {{ else }}
           {{ $endLabel = time.Format "Jan 2006" (time.AsTime $position.endDate) }}
         {{ end }}
+        {{ $experienceIndex = add $experienceIndex 1 }}
         <li class="academic-list__item">
-          <h3>{{ $position.position }}</h3>
-          <p class="academic-list__meta">{{ $job.organization }} · {{ $job.location }}</p>
-          <p class="academic-list__dates">{{ time.Format "Jan 2006" $start }} - {{ $endLabel }}</p>
-          {{ with $position.highlights }}
-            <p>{{ index . 0 }}</p>
-          {{ end }}
+          <div class="academic-list__marker">{{ $experienceIndex }}.</div>
+          <div class="academic-list__body">
+            <h3>{{ $position.position }}</h3>
+            <p class="academic-list__meta">{{ $job.organization }} · {{ $job.location }}</p>
+            <p class="academic-list__dates">{{ time.Format "Jan 2006" $start }} - {{ $endLabel }}</p>
+            {{ with $position.highlights }}
+              <p>{{ index . 0 }}</p>
+            {{ end }}
+          </div>
         </li>
       {{ end }}
     {{ end }}
