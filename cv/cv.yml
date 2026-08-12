@@ -159,6 +159,11 @@ awards:
     highlights:
 
 publicationEntries:
+  - sortKey: 2026-08
+    authors: 'Yifei Wang, *Zhongyi Ni*, Mingxin He, Jinguo Liu, and Yingfei Gu'
+    title: Decoupling 2D translation-invariant topological CSS codes
+    url: https://arxiv.org/abs/2608.09915
+    venue: 'arXiv:2608.09915 [quant-ph], 2026.'
   - sortKey: 2026-04
     authors: 'Yuqing Wang, Xiaotian Nie, Jiale Dai, *Zhongyi Ni*, Tao Zhang, Hui Zhai, and Linghui Chen'
     title: AI-Enabled Decoding of Qubit Loss for Quantum Error-Correcting Codes
