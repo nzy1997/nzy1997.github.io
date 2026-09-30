@@ -164,6 +164,11 @@ publicationEntries:
     title: Decoupling 2D translation-invariant topological CSS codes
     url: https://arxiv.org/abs/2608.09915
     venue: 'arXiv:2608.09915 [quant-ph], 2026.'
+  - sortKey: 2026-08
+    authors: 'Shiwen An, *Zhongyi Ni*, Huanhai Zhou, and Jin-Guo Liu'
+    title: Fast Trainable Multilinear Bases for Image Compression
+    url: https://arxiv.org/abs/2608.00053
+    venue: 'arXiv:2608.00053 [eess.IV], 2026.'
   - sortKey: 2026-04
     authors: 'Yuqing Wang, Xiaotian Nie, Jiale Dai, *Zhongyi Ni*, Tao Zhang, Hui Zhai, and Linghui Chen'
     title: AI-Enabled Decoding of Qubit Loss for Quantum Error-Correcting Codes

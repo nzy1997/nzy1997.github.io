@@ -64,7 +64,7 @@
       <li class="academic-list__item academic-publications__item">
         <div class="academic-list__marker">{{ add $index 1 }}.</div>
         <div class="academic-list__body">
-          <div class="academic-publications__authors">{{ $entry.authors | markdownify }}</div>
+          <div class="academic-publications__authors">{{ replace $entry.authors (printf "*%s*" $cv.personal.name) (printf "**%s**" $cv.personal.name) | markdownify }}</div>
           <div class="academic-publications__title">
             <a href="{{ $entry.url }}" rel="noopener noreferrer" target="_blank">{{ $entry.title }}</a>
           </div>
